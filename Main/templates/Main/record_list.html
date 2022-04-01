@@ -1,0 +1,105 @@
+{% extends 'Main/base.html' %}
+{% block content %}
+
+<div class="center-items well">
+    <div class="show-money">
+        <small>Balance</small><h3 class="balance">{{ user.account.balance }}</h3>
+    </div>
+    <div class="show-money">
+        <small>Total Deposited</small><h3 class="deposited">{{ user.account.total_deposited }}</h3>
+    </div>
+    <div class="show-money">
+        <small>Total Withdrawn</small><h3 class="withdrawn">{{ user.account.total_withdrawl }}</h3>
+    </div>
+</div>
+
+<style>
+    .center-items {
+        display: flex;
+        justify-content: space-around;
+    }
+    .show-money {
+        display: flex;
+        flex-direction: column;   
+        justify-content: center;
+        align-items: center; 
+    }
+    .balance {
+        color: blue;
+    }
+    .deposited {
+        color: blueviolet;
+    }
+    .withdrawn {
+        color: red;
+    }
+</style>
+
+{% if not page_obj %}
+    <p>No transaction is added yet, please add transaction <a href="{% url 'main:make_transaction' %}">here</a></p>
+{% endif %}
+<div style="overflow-x: auto;">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Transaction Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Deposited/Withdrawl</th>
+            <th scope="col">Total</th>
+            <th scope="col">Description</th>
+            <th scope="col">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for record in page_obj %}
+                <tr>
+                    <td>{{record.transaction_date}}</td>
+                    <td>{{record.amount}}</td>
+                    {% if record.is_deposited %}
+                        <td>Deposited</td>
+                    {% else %}
+                        <td>Withdrawl</td>
+                    {% endif %}
+                    <td>{{ record.total }}</td>
+                    <td>{{record.description}}</td>
+                    <td>
+                        <a href="{% url 'main:record_update' record.pk %}" class="btn btn-primary btn-lg " role="button" aria-disabled="true">Update</a>
+                        <a href="{% url 'main:record_delete' record.pk %}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% if page_obj %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">First</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}        
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="page-item active"><a class="page-link">{{ i }}</a></li>
+                {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Previous">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Last</span>
+                    </a>
+                  </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}    
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'Main/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}   
+<style>
+    .content-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .content-section form {
+        border: 2px solid #d2d2d2;
+        padding: 12px;
+    }
+</style> 
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Update Record</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Update</button>
+                <a class="btn btn-outline-secondary" href="{% url 'main:transactions' %}">Back</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'Main/base.html' %}
+{% load static %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    <h3>Welcome {{ user.username.title }}!</h3>
+    <h1>Your account balance is{{ user.account.balance }}</h1>    
+{% endblock %}
+{% block script %}
+
+{% endblock %}
